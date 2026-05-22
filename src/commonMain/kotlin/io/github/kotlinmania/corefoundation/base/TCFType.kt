@@ -26,9 +26,10 @@ typealias CFIndex = Long
 expect class CFTypeRef
 
 /**
- * Trait for types that can be converted to CFIndex.
- * Always use this method to construct a CFIndex value. It performs bounds checking to
- * ensure the value is in range.
+ * Helpers for constructing CFIndex values.
+ *
+ * Note: only the ULong overload performs bounds checking; Int/Long values are always representable
+ * as CFIndex on supported Kotlin targets.
  */
 fun Int.toCFIndex(): CFIndex = this.toLong()
 
