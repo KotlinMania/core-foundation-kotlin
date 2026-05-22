@@ -30,15 +30,15 @@ buildscript {
                 "org.bouncycastle:bcpg-jdk18on:1.84",
                 "org.bouncycastle:bcpkix-jdk18on:1.84",
 
-                // Netty security patches (HTTP/2 CONTINUATION DoS CVE-2026-33871, MadeYouReset CVE-2025-55163, and others)
-                "io.netty:netty-common:4.1.132.Final",
-                "io.netty:netty-buffer:4.1.132.Final",
-                "io.netty:netty-codec:4.1.132.Final",
-                "io.netty:netty-codec-http:4.1.132.Final",
-                "io.netty:netty-codec-http2:4.1.132.Final",
-                "io.netty:netty-handler:4.1.132.Final",
-                "io.netty:netty-transport:4.1.132.Final",
-                "io.netty:netty-resolver:4.1.132.Final",
+                // Netty security patches (CVE-2026-42586, CVE-2026-42578, CVE-2026-42587, and many others)
+                "io.netty:netty-common:4.1.133.Final",
+                "io.netty:netty-buffer:4.1.133.Final",
+                "io.netty:netty-codec:4.1.133.Final",
+                "io.netty:netty-codec-http:4.1.133.Final",
+                "io.netty:netty-codec-http2:4.1.133.Final",
+                "io.netty:netty-handler:4.1.133.Final",
+                "io.netty:netty-transport:4.1.133.Final",
+                "io.netty:netty-resolver:4.1.133.Final",
 
                 // JDOM XXE injection patch (CVE-2021-33813)
                 "org.jdom:jdom2:2.0.6.1",
@@ -230,15 +230,15 @@ configurations.all {
             "org.bouncycastle:bcpg-jdk18on:1.84",
             "org.bouncycastle:bcpkix-jdk18on:1.84",
 
-            // Netty security patches (HTTP/2 CONTINUATION DoS CVE-2026-33871, MadeYouReset CVE-2025-55163, and others)
-            "io.netty:netty-common:4.1.132.Final",
-            "io.netty:netty-buffer:4.1.132.Final",
-            "io.netty:netty-codec:4.1.132.Final",
-            "io.netty:netty-codec-http:4.1.132.Final",
-            "io.netty:netty-codec-http2:4.1.132.Final",
-            "io.netty:netty-handler:4.1.132.Final",
-            "io.netty:netty-transport:4.1.132.Final",
-            "io.netty:netty-resolver:4.1.132.Final",
+            // Netty security patches (CVE-2026-42586, CVE-2026-42578, CVE-2026-42587, and many others)
+            "io.netty:netty-common:4.1.133.Final",
+            "io.netty:netty-buffer:4.1.133.Final",
+            "io.netty:netty-codec:4.1.133.Final",
+            "io.netty:netty-codec-http:4.1.133.Final",
+            "io.netty:netty-codec-http2:4.1.133.Final",
+            "io.netty:netty-handler:4.1.133.Final",
+            "io.netty:netty-transport:4.1.133.Final",
+            "io.netty:netty-resolver:4.1.133.Final",
 
             // JDOM XXE injection patch (CVE-2021-33813)
             "org.jdom:jdom2:2.0.6.1",
