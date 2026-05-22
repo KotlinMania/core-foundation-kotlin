@@ -15,14 +15,24 @@ actual class CFString internal constructor(private val ref: CFStringRef) : TCFTy
     actual companion object {
         actual fun new(string: String): CFString {
             val bytes = string.encodeToByteArray()
-            val stringRef = bytes.usePinned { pinned ->
+            val stringRef = if (bytes.isEmpty()) {
                 CoreFoundation.CFStringCreateWithBytes(
                     CoreFoundation.kCFAllocatorDefault,
-                    pinned.addressOf(0).reinterpret(),
-                    bytes.size.toCFIndex(),
+                    null,
+                    0.toCFIndex(),
                     CoreFoundation.kCFStringEncodingUTF8.toUInt(),
                     0u.convert()
                 )
+            } else {
+                bytes.usePinned { pinned ->
+                    CoreFoundation.CFStringCreateWithBytes(
+                        CoreFoundation.kCFAllocatorDefault,
+                        pinned.addressOf(0).reinterpret(),
+                        bytes.size.toCFIndex(),
+                        CoreFoundation.kCFStringEncodingUTF8.toUInt(),
+                        0u.convert()
+                    )
+                }
             }
             require(stringRef != null) { "Failed to create CFString" }
             return CFString(stringRef)
