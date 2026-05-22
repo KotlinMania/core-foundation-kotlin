@@ -56,9 +56,13 @@ actual class CFString internal constructor(private val ref: CFStringRef) : TCFTy
         }
 
         val length = charLen()
+        if (length == 0L) {
+            return ""
+        }
+
         memScoped {
             val bytesRequired = alloc<CFIndexVar>()
-            CoreFoundation.CFStringGetBytes(
+            val charsMeasured = CoreFoundation.CFStringGetBytes(
                 ref,
                 CoreFoundation.CFRangeMake(0, length),
                 CoreFoundation.kCFStringEncodingUTF8.toUInt(),
@@ -68,6 +72,8 @@ actual class CFString internal constructor(private val ref: CFStringRef) : TCFTy
                 0,
                 bytesRequired.ptr
             )
+            require(charsMeasured == length) { "Failed to measure CFString UTF-8 length" }
+            require(bytesRequired.value in 1..Int.MAX_VALUE.toLong()) { "CFString too large to convert to Kotlin String" }
 
             val buffer = ByteArray(bytesRequired.value.toInt())
             buffer.usePinned { pinned ->
