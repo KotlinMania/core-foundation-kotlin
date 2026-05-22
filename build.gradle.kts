@@ -20,6 +20,42 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootEnvSpec
 import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnRootEnvSpec
 
+// Force secure versions for all configurations including buildscript
+buildscript {
+    configurations.all {
+        resolutionStrategy {
+            force(
+                // Bouncy Castle security patches (CVE-2025-8916 and others)
+                "org.bouncycastle:bcprov-jdk18on:1.84",
+                "org.bouncycastle:bcpg-jdk18on:1.84",
+                "org.bouncycastle:bcpkix-jdk18on:1.84",
+
+                // Netty security patches (HTTP/2 CONTINUATION DoS CVE-2026-33871, MadeYouReset CVE-2025-55163, and others)
+                "io.netty:netty-common:4.1.132.Final",
+                "io.netty:netty-buffer:4.1.132.Final",
+                "io.netty:netty-codec:4.1.132.Final",
+                "io.netty:netty-codec-http:4.1.132.Final",
+                "io.netty:netty-codec-http2:4.1.132.Final",
+                "io.netty:netty-handler:4.1.132.Final",
+                "io.netty:netty-transport:4.1.132.Final",
+                "io.netty:netty-resolver:4.1.132.Final",
+
+                // JDOM XXE injection patch (CVE-2021-33813)
+                "org.jdom:jdom2:2.0.6.1",
+
+                // jose4j DoS via compressed JWE patch (CVE-2024-29371)
+                "org.bitbucket.b_c:jose4j:0.9.6",
+
+                // Apache Commons Lang uncontrolled recursion patch (CVE-2025-48924)
+                "org.apache.commons:commons-lang3:3.18.0",
+
+                // Apache HttpClient security patches
+                "org.apache.httpcomponents:httpclient:4.5.14",
+            )
+        }
+    }
+}
+
 plugins {
     kotlin("multiplatform") version "2.3.21"
     kotlin("plugin.serialization") version "2.3.21"
@@ -185,6 +221,39 @@ fun installProjectAndroidSdk(execOperations: ExecOperations) {
 // local.properties to this repo's own .android-sdk path.
 val androidSdkExecOperations = serviceOf<ExecOperations>()
 installProjectAndroidSdk(androidSdkExecOperations)
+
+configurations.all {
+    resolutionStrategy {
+        force(
+            // Bouncy Castle security patches (CVE-2025-8916 and others)
+            "org.bouncycastle:bcprov-jdk18on:1.84",
+            "org.bouncycastle:bcpg-jdk18on:1.84",
+            "org.bouncycastle:bcpkix-jdk18on:1.84",
+
+            // Netty security patches (HTTP/2 CONTINUATION DoS CVE-2026-33871, MadeYouReset CVE-2025-55163, and others)
+            "io.netty:netty-common:4.1.132.Final",
+            "io.netty:netty-buffer:4.1.132.Final",
+            "io.netty:netty-codec:4.1.132.Final",
+            "io.netty:netty-codec-http:4.1.132.Final",
+            "io.netty:netty-codec-http2:4.1.132.Final",
+            "io.netty:netty-handler:4.1.132.Final",
+            "io.netty:netty-transport:4.1.132.Final",
+            "io.netty:netty-resolver:4.1.132.Final",
+
+            // JDOM XXE injection patch (CVE-2021-33813)
+            "org.jdom:jdom2:2.0.6.1",
+
+            // jose4j DoS via compressed JWE patch (CVE-2024-29371)
+            "org.bitbucket.b_c:jose4j:0.9.6",
+
+            // Apache Commons Lang uncontrolled recursion patch (CVE-2025-48924)
+            "org.apache.commons:commons-lang3:3.18.0",
+
+            // Apache HttpClient security patches
+            "org.apache.httpcomponents:httpclient:4.5.14",
+        )
+    }
+}
 
 kotlin {
     applyDefaultHierarchyTemplate()
