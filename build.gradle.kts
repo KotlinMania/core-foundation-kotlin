@@ -20,6 +20,35 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootEnvSpec
 import org.jetbrains.kotlin.gradle.targets.wasm.nodejs.WasmNodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnRootEnvSpec
 
+// Force Bouncy Castle to version 1.84 to address CVE-2026-5598
+// This must be declared before plugins to affect the build classpath
+buildscript {
+    dependencies {
+        constraints {
+            // CVE-2026-5598: Covert timing channel vulnerability in Bouncy Castle < 1.84
+            // See: https://github.com/advisories/GHSA-p93r-85wp-75v3
+            classpath("org.bouncycastle:bcprov-jdk18on") {
+                version {
+                    strictly("1.84")
+                }
+                because("CVE-2026-5598: Covert timing channel vulnerability in versions < 1.84")
+            }
+            classpath("org.bouncycastle:bcpkix-jdk18on") {
+                version {
+                    strictly("1.84")
+                }
+                because("CVE-2026-5598: Covert timing channel vulnerability in versions < 1.84")
+            }
+            classpath("org.bouncycastle:bcutil-jdk18on") {
+                version {
+                    strictly("1.84")
+                }
+                because("CVE-2026-5598: Covert timing channel vulnerability in versions < 1.84")
+            }
+        }
+    }
+}
+
 plugins {
     kotlin("multiplatform") version "2.3.21"
     kotlin("plugin.serialization") version "2.3.21"
