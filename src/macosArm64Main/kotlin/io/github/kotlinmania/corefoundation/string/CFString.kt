@@ -39,19 +39,9 @@ actual class CFString internal constructor(private val ref: CFStringRef) : TCFTy
         }
 
         actual fun fromStaticString(string: String): CFString {
-            val bytes = string.encodeToByteArray()
-            val stringRef = bytes.usePinned { pinned ->
-                CoreFoundation.CFStringCreateWithBytesNoCopy(
-                    CoreFoundation.kCFAllocatorDefault,
-                    pinned.addressOf(0).reinterpret(),
-                    bytes.size.toCFIndex(),
-                    CoreFoundation.kCFStringEncodingUTF8.toUInt(),
-                    0u.convert(),
-                    CoreFoundation.kCFAllocatorNull
-                )
-            }
-            require(stringRef != null) { "Failed to create static CFString" }
-            return CFString(stringRef)
+            // Kotlin ByteArray backing stores are not statically allocated and cannot be safely
+            // handed to CFStringCreateWithBytesNoCopy as a long-lived buffer.
+            return new(string)
         }
     }
 
