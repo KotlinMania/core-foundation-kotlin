@@ -100,7 +100,7 @@ actual class CFString internal constructor(private val ref: CFStringRef) : TCFTy
     }
 
     override fun asCFTypeRef(): CFTypeRef {
-        return requireNotNull(ref).reinterpret()
+        return CFTypeRef(requireNotNull(ref).reinterpret())
     }
 
     override fun typeId(): CFTypeID {
