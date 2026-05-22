@@ -303,6 +303,20 @@ kotlin {
             }
         }
 
+        val nativeMain by getting
+        val macosArm64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosX64Main by getting
+
+        val appleCoreFoundationMain by creating {
+            dependsOn(nativeMain)
+        }
+        macosArm64Main.dependsOn(appleCoreFoundationMain)
+        iosArm64Main.dependsOn(appleCoreFoundationMain)
+        iosSimulatorArm64Main.dependsOn(appleCoreFoundationMain)
+        iosX64Main.dependsOn(appleCoreFoundationMain)
+
     }
     jvmToolchain(21)
 }
