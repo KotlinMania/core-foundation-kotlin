@@ -35,8 +35,7 @@ const val kCFStringEncodingUTF32LE: CFStringEncoding = 0x1c000100u
 /**
  * Boolean type used in CoreFoundation C API.
  */
-typealias Boolean = UByte
-
+typealias CFBoolean = UByte
 /**
  * Range structure.
  */
