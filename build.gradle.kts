@@ -30,6 +30,14 @@ plugins {
 group = "io.github.kotlinmania"
 version = "0.1.0"
 
+// Force JDOM to patched version to fix CVE-2021-33813 (XXE vulnerability)
+// Reference: GHSA-2363-cqg2-863c
+configurations.all {
+    resolutionStrategy {
+        force("org.jdom:jdom2:2.0.6.1")
+    }
+}
+
 val androidCommandLineToolsRevision = "14742923"
 val projectCompileSdk = "34"
 val projectAndroidBuildTools = "36.0.0"
