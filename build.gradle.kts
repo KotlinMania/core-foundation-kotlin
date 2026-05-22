@@ -227,7 +227,37 @@ val androidSdkExecOperations = serviceOf<ExecOperations>()
 installProjectAndroidSdk(androidSdkExecOperations)
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    // We need to use a custom target hierarchy because the 32-bit watchOS targets
+    // (watchosArm32, watchosArm64/arm64_32) use the ILP32 ABI where CFIndex=Int and
+    // CFTypeID=UInt, while other Apple targets use the LP64 ABI where CFIndex=Long
+    // and CFTypeID=ULong. The cinterop commonizer cannot merge these incompatible types.
+
+    applyHierarchyTemplate {
+        common {
+            group("native") {
+                group("nix") {
+                    group("apple") {
+                        withMacos()
+                        withIos()
+                        withTvos()
+                        // Only include 64-bit watchOS in the apple group
+                        group("watchos64") {
+                            withWatchosDeviceArm64()
+                            withWatchosSimulatorArm64()
+                        }
+                    }
+                    withLinux()
+                }
+                withMingw()
+                withAndroidNative()
+                // Separate group for 32-bit watchOS targets
+                group("watchos32") {
+                    withWatchosArm32()
+                    withWatchosArm64()  // This is arm64_32 (ILP32), not true 64-bit
+                }
+            }
+        }
+    }
 
     sourceSets.all {
         languageSettings.optIn("kotlin.time.ExperimentalTime")
@@ -331,10 +361,9 @@ kotlin {
             }
         }
 
-        // Apple targets share src/appleMain/, automatically wired through
-        // applyDefaultHierarchyTemplate(); cinterop("CoreFoundation") is
-        // registered on every Apple target so the commonizer makes the
-        // CoreFoundation symbols visible in the shared appleMain source set.
+        // 64-bit Apple targets (except 32-bit watchOS) share src/appleMain/;
+        // 32-bit watchOS targets (watchosArm32, watchosArm64/arm64_32) use src/watchos32Main/
+        // due to ILP32 vs LP64 ABI incompatibility in CFIndex/CFTypeID type sizes.
     }
     jvmToolchain(21)
 }
