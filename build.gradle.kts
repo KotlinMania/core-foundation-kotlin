@@ -203,15 +203,27 @@ kotlin {
     val xcf = XCFramework("CoreFoundation")
 
     macosArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosSimulatorArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosX64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
 
