@@ -2,7 +2,7 @@
   "type": "port",
   "name": "core-foundation-kotlin",
   "source": {
-    "path": "tmp/core-foundation/src",
+    "path": "tmp/core-foundation/core-foundation/src",
     "lang": "rust"
   },
   "target": {

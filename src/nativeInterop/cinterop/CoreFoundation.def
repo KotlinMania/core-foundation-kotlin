@@ -1,0 +1,4 @@
+headers = CoreFoundation/CoreFoundation.h
+headerFilter = CoreFoundation/*
+compilerOpts = -framework CoreFoundation
+linkerOpts = -framework CoreFoundation

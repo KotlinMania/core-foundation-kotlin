@@ -203,15 +203,27 @@ kotlin {
     val xcf = XCFramework("CoreFoundation")
 
     macosArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosSimulatorArm64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosX64 {
+        compilations.getByName("main") {
+            cinterops.create("CoreFoundation")
+        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
 
@@ -290,6 +302,20 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
+        val nativeMain by getting
+        val macosArm64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosX64Main by getting
+
+        val appleCoreFoundationMain by creating {
+            dependsOn(nativeMain)
+        }
+        macosArm64Main.dependsOn(appleCoreFoundationMain)
+        iosArm64Main.dependsOn(appleCoreFoundationMain)
+        iosSimulatorArm64Main.dependsOn(appleCoreFoundationMain)
+        iosX64Main.dependsOn(appleCoreFoundationMain)
 
     }
     jvmToolchain(21)
