@@ -243,27 +243,15 @@ kotlin {
     val xcf = XCFramework("CoreFoundation")
 
     macosArm64 {
-        compilations.getByName("main") {
-            cinterops.create("CoreFoundation")
-        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosArm64 {
-        compilations.getByName("main") {
-            cinterops.create("CoreFoundation")
-        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        compilations.getByName("main") {
-            cinterops.create("CoreFoundation")
-        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosX64 {
-        compilations.getByName("main") {
-            cinterops.create("CoreFoundation")
-        }
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
 
@@ -274,12 +262,13 @@ kotlin {
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
 
-    watchosArm32 {
-        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
-    }
-    watchosArm64 {
-        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
-    }
+    // The 32-bit-pointer watchOS targets are deliberately excluded: watchosArm32
+    // (armv7k, Apple Watch Series 1–3) and watchosArm64 (arm64_32 ILP32 ABI,
+    // Series 4 through SE 2). Both expose CFIndex/CFTypeID as Int/UInt rather
+    // than Long/ULong, which prevents the cinterop commonizer from exposing a
+    // single shared API surface to appleMain. Apple's modern watchOS devices
+    // (Ultra/Series 9+) use the 64-bit-pointer LP64 ABI surfaced as
+    // watchosDeviceArm64 below.
     watchosDeviceArm64 {
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
@@ -343,20 +332,10 @@ kotlin {
             }
         }
 
-        val nativeMain by getting
-        val macosArm64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosX64Main by getting
-
-        val appleCoreFoundationMain by creating {
-            dependsOn(nativeMain)
-        }
-        macosArm64Main.dependsOn(appleCoreFoundationMain)
-        iosArm64Main.dependsOn(appleCoreFoundationMain)
-        iosSimulatorArm64Main.dependsOn(appleCoreFoundationMain)
-        iosX64Main.dependsOn(appleCoreFoundationMain)
-
+        // Apple targets share src/appleMain/, automatically wired through
+        // applyDefaultHierarchyTemplate(); cinterop("CoreFoundation") is
+        // registered on every Apple target so the commonizer makes the
+        // CoreFoundation symbols visible in the shared appleMain source set.
     }
     jvmToolchain(21)
 }
@@ -623,10 +602,6 @@ val fullTargetBuildTasks = listOf(
     "tvosArm64TestBinaries",
     "tvosSimulatorArm64Binaries",
     "tvosSimulatorArm64TestBinaries",
-    "watchosArm32Binaries",
-    "watchosArm32TestBinaries",
-    "watchosArm64Binaries",
-    "watchosArm64TestBinaries",
     "watchosDeviceArm64Binaries",
     "watchosDeviceArm64TestBinaries",
     "watchosSimulatorArm64Binaries",
@@ -664,8 +639,6 @@ val fullTargetBuildTasks = listOf(
     "exportCrossCompilationMetadataForMingwX64ApiElements",
     "exportCrossCompilationMetadataForTvosArm64ApiElements",
     "exportCrossCompilationMetadataForTvosSimulatorArm64ApiElements",
-    "exportCrossCompilationMetadataForWatchosArm32ApiElements",
-    "exportCrossCompilationMetadataForWatchosArm64ApiElements",
     "exportCrossCompilationMetadataForWatchosDeviceArm64ApiElements",
     "exportCrossCompilationMetadataForWatchosSimulatorArm64ApiElements",
     "exportTargetPublicationCoordinatesForAndroidApiElements",
@@ -691,8 +664,6 @@ val fullTargetBuildTasks = listOf(
     "exportTargetPublicationCoordinatesForWasmJsRuntimeElements",
     "exportTargetPublicationCoordinatesForWasmWasiApiElements",
     "exportTargetPublicationCoordinatesForWasmWasiRuntimeElements",
-    "exportTargetPublicationCoordinatesForWatchosArm32ApiElements",
-    "exportTargetPublicationCoordinatesForWatchosArm64ApiElements",
     "exportTargetPublicationCoordinatesForWatchosDeviceArm64ApiElements",
     "exportTargetPublicationCoordinatesForWatchosSimulatorArm64ApiElements",
 )

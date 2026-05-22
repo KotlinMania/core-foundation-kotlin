@@ -1,4 +1,6 @@
 // port-lint: source src/base.rs
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package io.github.kotlinmania.corefoundation.base
 
 // Copyright 2013 The Servo Project Developers. See the COPYRIGHT
@@ -22,8 +24,11 @@ typealias CFIndex = Long
 
 /**
  * Generic CF type reference.
+ *
+ * The upstream Rust crate aliases `CFTypeRef` to `*const c_void`. On Apple targets in Kotlin/Native
+ * this is the cinterop `COpaquePointer?` that any Core Foundation object reference can be held as.
  */
-expect class CFTypeRef
+typealias CFTypeRef = kotlinx.cinterop.COpaquePointer?
 
 /**
  * Helpers for constructing CFIndex values.
