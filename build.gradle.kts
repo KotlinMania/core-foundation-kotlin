@@ -61,11 +61,27 @@ version = "0.1.0"
 
 // Force JDOM to patched version to fix CVE-2021-33813 (XXE vulnerability)
 // Reference: GHSA-2363-cqg2-863c
+// Force Netty to patched version to fix multiple vulnerabilities:
+// - CVE-2026-33871 (HTTP/2 CONTINUATION frame flood DoS) - GHSA-w9fj-cfpg-grvv
+// - HttpContentDecompressor maxAllocation bypass (decompression bomb DoS)
+// - HttpClientCodec response desynchronization
+// - Lz4FrameDecoder resource exhaustion
 // This applies to all configurations including transitive dependencies from plugins
 allprojects {
     configurations.all {
         resolutionStrategy {
             force("org.jdom:jdom2:2.0.6.1")
+            force("io.netty:netty-codec-http2:4.1.133.Final")
+            force("io.netty:netty-common:4.1.133.Final")
+            force("io.netty:netty-buffer:4.1.133.Final")
+            force("io.netty:netty-transport:4.1.133.Final")
+            force("io.netty:netty-resolver:4.1.133.Final")
+            force("io.netty:netty-codec:4.1.133.Final")
+            force("io.netty:netty-handler:4.1.133.Final")
+            force("io.netty:netty-codec-http:4.1.133.Final")
+            force("io.netty:netty-handler-proxy:4.1.133.Final")
+            force("io.netty:netty-codec-socks:4.1.133.Final")
+            force("io.netty:netty-transport-native-unix-common:4.1.133.Final")
         }
     }
 }
