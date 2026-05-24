@@ -1,6 +1,5 @@
 {
   "type": "maintenance",
-  "parity_mode": false,
   "name": "core-foundation-kotlin",
   "source": {
     "path": "tmp/core-foundation/core-foundation/src",
