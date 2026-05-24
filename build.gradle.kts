@@ -61,11 +61,27 @@ version = "0.1.0"
 
 // Force JDOM to patched version to fix CVE-2021-33813 (XXE vulnerability)
 // Reference: GHSA-2363-cqg2-863c
+// Force Netty to patched version to fix multiple vulnerabilities:
+// - CVE-2026-33871 (HTTP/2 CONTINUATION frame flood DoS) - GHSA-w9fj-cfpg-grvv
+// - HttpContentDecompressor maxAllocation bypass (decompression bomb DoS)
+// - HttpClientCodec response desynchronization
+// - Lz4FrameDecoder resource exhaustion
 // This applies to all configurations including transitive dependencies from plugins
 allprojects {
     configurations.all {
         resolutionStrategy {
             force("org.jdom:jdom2:2.0.6.1")
+            force("io.netty:netty-codec-http2:4.1.133.Final")
+            force("io.netty:netty-common:4.1.133.Final")
+            force("io.netty:netty-buffer:4.1.133.Final")
+            force("io.netty:netty-transport:4.1.133.Final")
+            force("io.netty:netty-resolver:4.1.133.Final")
+            force("io.netty:netty-codec:4.1.133.Final")
+            force("io.netty:netty-handler:4.1.133.Final")
+            force("io.netty:netty-codec-http:4.1.133.Final")
+            force("io.netty:netty-handler-proxy:4.1.133.Final")
+            force("io.netty:netty-codec-socks:4.1.133.Final")
+            force("io.netty:netty-transport-native-unix-common:4.1.133.Final")
         }
     }
 }
@@ -227,7 +243,37 @@ val androidSdkExecOperations = serviceOf<ExecOperations>()
 installProjectAndroidSdk(androidSdkExecOperations)
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    // We need to use a custom target hierarchy because the 32-bit watchOS targets
+    // (watchosArm32, watchosArm64/arm64_32) use the ILP32 ABI where CFIndex=Int and
+    // CFTypeID=UInt, while other Apple targets use the LP64 ABI where CFIndex=Long
+    // and CFTypeID=ULong. The cinterop commonizer cannot merge these incompatible types.
+
+    applyHierarchyTemplate {
+        common {
+            group("native") {
+                group("nix") {
+                    group("apple") {
+                        withMacos()
+                        withIos()
+                        withTvos()
+                        // Only include 64-bit watchOS in the apple group
+                        group("watchos64") {
+                            withWatchosDeviceArm64()
+                            withWatchosSimulatorArm64()
+                        }
+                    }
+                    withLinux()
+                }
+                withMingw()
+                withAndroidNative()
+                // Separate group for 32-bit watchOS targets
+                group("watchos32") {
+                    withWatchosArm32()
+                    withWatchosArm64()  // This is arm64_32 (ILP32), not true 64-bit
+                }
+            }
+        }
+    }
 
     sourceSets.all {
         languageSettings.optIn("kotlin.time.ExperimentalTime")
@@ -249,10 +295,18 @@ kotlin {
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
     iosSimulatorArm64 {
-        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
+        binaries.framework {
+            baseName = "CoreFoundation"
+            isStatic = true
+            xcf.add(this)
+        }
     }
     iosX64 {
-        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
+        binaries.framework {
+            baseName = "CoreFoundation"
+            isStatic = true
+            xcf.add(this)
+        }
     }
 
     tvosArm64 {
@@ -262,13 +316,12 @@ kotlin {
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
 
-    // The 32-bit-pointer watchOS targets are deliberately excluded: watchosArm32
-    // (armv7k, Apple Watch Series 1–3) and watchosArm64 (arm64_32 ILP32 ABI,
-    // Series 4 through SE 2). Both expose CFIndex/CFTypeID as Int/UInt rather
-    // than Long/ULong, which prevents the cinterop commonizer from exposing a
-    // single shared API surface to appleMain. Apple's modern watchOS devices
-    // (Ultra/Series 9+) use the 64-bit-pointer LP64 ABI surfaced as
-    // watchosDeviceArm64 below.
+    watchosArm32 {
+        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
+    }
+    watchosArm64 {
+        binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
+    }
     watchosDeviceArm64 {
         binaries.framework { baseName = "CoreFoundation"; xcf.add(this) }
     }
@@ -332,10 +385,9 @@ kotlin {
             }
         }
 
-        // Apple targets share src/appleMain/, automatically wired through
-        // applyDefaultHierarchyTemplate(); cinterop("CoreFoundation") is
-        // registered on every Apple target so the commonizer makes the
-        // CoreFoundation symbols visible in the shared appleMain source set.
+        // 64-bit Apple targets (except 32-bit watchOS) share src/appleMain/;
+        // 32-bit watchOS targets (watchosArm32, watchosArm64/arm64_32) use src/watchos32Main/
+        // due to ILP32 vs LP64 ABI incompatibility in CFIndex/CFTypeID type sizes.
     }
     jvmToolchain(21)
 }
@@ -602,6 +654,10 @@ val fullTargetBuildTasks = listOf(
     "tvosArm64TestBinaries",
     "tvosSimulatorArm64Binaries",
     "tvosSimulatorArm64TestBinaries",
+    "watchosArm32Binaries",
+    "watchosArm32TestBinaries",
+    "watchosArm64Binaries",
+    "watchosArm64TestBinaries",
     "watchosDeviceArm64Binaries",
     "watchosDeviceArm64TestBinaries",
     "watchosSimulatorArm64Binaries",
@@ -639,6 +695,8 @@ val fullTargetBuildTasks = listOf(
     "exportCrossCompilationMetadataForMingwX64ApiElements",
     "exportCrossCompilationMetadataForTvosArm64ApiElements",
     "exportCrossCompilationMetadataForTvosSimulatorArm64ApiElements",
+    "exportCrossCompilationMetadataForWatchosArm32ApiElements",
+    "exportCrossCompilationMetadataForWatchosArm64ApiElements",
     "exportCrossCompilationMetadataForWatchosDeviceArm64ApiElements",
     "exportCrossCompilationMetadataForWatchosSimulatorArm64ApiElements",
     "exportTargetPublicationCoordinatesForAndroidApiElements",
@@ -664,6 +722,8 @@ val fullTargetBuildTasks = listOf(
     "exportTargetPublicationCoordinatesForWasmJsRuntimeElements",
     "exportTargetPublicationCoordinatesForWasmWasiApiElements",
     "exportTargetPublicationCoordinatesForWasmWasiRuntimeElements",
+    "exportTargetPublicationCoordinatesForWatchosArm32ApiElements",
+    "exportTargetPublicationCoordinatesForWatchosArm64ApiElements",
     "exportTargetPublicationCoordinatesForWatchosDeviceArm64ApiElements",
     "exportTargetPublicationCoordinatesForWatchosSimulatorArm64ApiElements",
 )
