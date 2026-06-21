@@ -36,10 +36,11 @@ const val kCFStringEncodingUTF32LE: CFStringEncoding = 0x1c000100u
  * Boolean type used in CoreFoundation C API.
  */
 typealias CFBoolean = UByte
+
 /**
  * Range structure.
  */
 data class CFRange(
     val location: CFIndex,
-    val length: CFIndex
+    val length: CFIndex,
 )
