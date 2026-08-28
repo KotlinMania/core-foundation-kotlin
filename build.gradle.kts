@@ -496,6 +496,41 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
+
+        val apple64Main by creating {
+            dependsOn(commonMain.get())
+        }
+        val apple64Test by creating {
+            dependsOn(commonTest.get())
+        }
+
+        getByName("macosArm64Main").dependsOn(apple64Main)
+        getByName("iosArm64Main").dependsOn(apple64Main)
+        getByName("iosSimulatorArm64Main").dependsOn(apple64Main)
+        getByName("iosX64Main").dependsOn(apple64Main)
+        getByName("tvosArm64Main").dependsOn(apple64Main)
+        getByName("tvosSimulatorArm64Main").dependsOn(apple64Main)
+        getByName("watchosArm64Main").dependsOn(apple64Main)
+        getByName("watchosSimulatorArm64Main").dependsOn(apple64Main)
+
+        getByName("macosArm64Test").dependsOn(apple64Test)
+        getByName("iosArm64Test").dependsOn(apple64Test)
+        getByName("iosSimulatorArm64Test").dependsOn(apple64Test)
+        getByName("iosX64Test").dependsOn(apple64Test)
+        getByName("tvosArm64Test").dependsOn(apple64Test)
+        getByName("tvosSimulatorArm64Test").dependsOn(apple64Test)
+        getByName("watchosArm64Test").dependsOn(apple64Test)
+        getByName("watchosSimulatorArm64Test").dependsOn(apple64Test)
+
+        val watchos32Main by creating {
+            dependsOn(commonMain.get())
+        }
+        val watchos32Test by creating {
+            dependsOn(commonTest.get())
+        }
+        getByName("watchosDeviceArm64Main").dependsOn(watchos32Main)
+        getByName("watchosDeviceArm64Test").dependsOn(watchos32Test)
+
         if (benchmarkEnabled) {
             val commonBenchmark = maybeCreate("commonBenchmark")
             commonBenchmark.dependencies {
