@@ -12,23 +12,9 @@ package io.github.kotlinmania.corefoundation.base
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-/**
- * Type ID for CF types.
- */
-typealias CFTypeID = ULong
-
-/**
- * Index type used throughout CoreFoundation.
- */
-typealias CFIndex = Long
-
-/**
- * Generic CF type reference.
- *
- * The upstream Rust crate aliases `CFTypeRef` to `*const c_void`. On Apple targets in Kotlin/Native
- * this is the cinterop `COpaquePointer?` that any Core Foundation object reference can be held as.
- */
-typealias CFTypeRef = kotlinx.cinterop.COpaquePointer?
+typealias CFIndex = io.github.kotlinmania.corefoundation.cinterop.CFIndex
+typealias CFTypeID = io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+typealias CFTypeRef = io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 
 /**
  * Helpers for constructing CFIndex values.

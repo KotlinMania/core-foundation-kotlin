@@ -1,0 +1,8 @@
+package = io.github.kotlinmania.corefoundation.cinterop
+headers = corefoundation.h
+headerFilter = corefoundation.h
+compilerOpts = -Isrc/nativeInterop/cinterop
+linkerOpts.osx = -framework CoreFoundation
+linkerOpts.ios = -framework CoreFoundation
+linkerOpts.tvos = -framework CoreFoundation
+linkerOpts.watchos = -framework CoreFoundation
