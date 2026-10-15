@@ -419,10 +419,7 @@ kotlin {
         configureBenchmarkCompilation()
         addToXcf()
     }
-    watchosArm64 {
-        configureBenchmarkCompilation()
-        addToXcf()
-    }
+    // watchosArm64 (WatchOS 32 / arm64_32): retired by workspace policy (§5.5.1). WatchOS 32 is not supported.
     watchosDeviceArm64 {
         configureBenchmarkCompilation()
         addToXcf()
@@ -430,13 +427,6 @@ kotlin {
     watchosSimulatorArm64 {
         configureBenchmarkCompilation()
         addToXcf()
-    }
-
-    // iosX64: Intel Mac simulator. Tier 3 in Kotlin/Native but NOT deprecated —
-    // Apple still ships x86_64 iOS simulator runtimes, so it is always built.
-    iosX64 {
-        configureBenchmarkCompilation()
-        addToXcf(static = true)
     }
 
     // Other native — Tier 1/2
@@ -517,29 +507,18 @@ kotlin {
         getByName("macosArm64Main").dependsOn(apple64Main)
         getByName("iosArm64Main").dependsOn(apple64Main)
         getByName("iosSimulatorArm64Main").dependsOn(apple64Main)
-        getByName("iosX64Main").dependsOn(apple64Main)
         getByName("tvosArm64Main").dependsOn(apple64Main)
         getByName("tvosSimulatorArm64Main").dependsOn(apple64Main)
-        getByName("watchosArm64Main").dependsOn(apple64Main)
         getByName("watchosSimulatorArm64Main").dependsOn(apple64Main)
+        getByName("watchosDeviceArm64Main").dependsOn(apple64Main)
 
         getByName("macosArm64Test").dependsOn(apple64Test)
         getByName("iosArm64Test").dependsOn(apple64Test)
         getByName("iosSimulatorArm64Test").dependsOn(apple64Test)
-        getByName("iosX64Test").dependsOn(apple64Test)
         getByName("tvosArm64Test").dependsOn(apple64Test)
         getByName("tvosSimulatorArm64Test").dependsOn(apple64Test)
-        getByName("watchosArm64Test").dependsOn(apple64Test)
         getByName("watchosSimulatorArm64Test").dependsOn(apple64Test)
-
-        val watchos32Main by creating {
-            dependsOn(commonMain.get())
-        }
-        val watchos32Test by creating {
-            dependsOn(commonTest.get())
-        }
-        getByName("watchosDeviceArm64Main").dependsOn(watchos32Main)
-        getByName("watchosDeviceArm64Test").dependsOn(watchos32Test)
+        getByName("watchosDeviceArm64Test").dependsOn(apple64Test)
 
         if (benchmarkEnabled) {
             val commonBenchmark = maybeCreate("commonBenchmark")
@@ -905,7 +884,10 @@ val publishToCentralPortal by tasks.registering {
                 statusBody["deploymentState"]?.toString()
                     ?: error("Central Portal status response did not contain deploymentState: ${statusResponse.body()}")
             when (deploymentState) {
-                "FAILED" -> error("Central Portal deployment failed: ${statusBody["errors"] ?: statusResponse.body()}")
+                "FAILED" -> {
+                    error("Central Portal deployment failed: ${statusBody["errors"] ?: statusResponse.body()}")
+                }
+
                 in terminalStates -> {
                     logger.lifecycle("Central Portal deployment $deploymentId reached $deploymentState.")
                     return@doLast
@@ -933,6 +915,13 @@ val publishToCentralPortal by tasks.registering {
 // Exact test lifecycle task. Without this, ./gradlew test is ambiguous between
 // Android test task names. This runs commonTest through the KMP allTests
 // lifecycle and adds the Android host + Swift Export parity tests.
+tasks.register("test") {
+    group = "verification"
+    description = "Runs the commonTest-backed KMP suite, Android host tests, and Swift Export smoke test."
+    dependsOn("hostTests")
+    dependsOn("swiftExportSmokeTest")
+}
+
 tasks.register("setupAndroidSdk") {
     group = "setup"
     description = "Downloads and configures the project-local Android SDK. (Alias for ensureAndroidSdk)"
@@ -967,12 +956,16 @@ tasks.register("swiftExportSmokeTest") {
 
     doLast {
         val execOperations = serviceOf<ExecOperations>()
-        val swiftBuildDir =
+        val swiftBuildFile =
             layout.buildDirectory
                 .dir("swift-test")
                 .get()
                 .asFile
-                .absolutePath
+        if (swiftBuildFile.exists()) {
+            swiftBuildFile.deleteRecursively()
+        }
+        swiftBuildFile.mkdirs()
+        val swiftBuildDir = swiftBuildFile.absolutePath
         execOperations
             .exec {
                 workingDir = projectDir
@@ -991,7 +984,7 @@ tasks.register("swiftExportSmokeTest") {
                         "CONFIGURATION" to "Debug",
                         "ARCHS" to "arm64",
                         "FRAMEWORKS_FOLDER_PATH" to "Frameworks",
-                        "MACOSX_DEPLOYMENT_TARGET" to "14.0",
+                        "MACOSX_DEPLOYMENT_TARGET" to "15.0",
                         "DEPLOYMENT_TARGET_SETTING_NAME" to "MACOSX_DEPLOYMENT_TARGET",
                     ),
                 )
@@ -1003,15 +996,17 @@ tasks.register("swiftExportSmokeTest") {
                 .get()
                 .asFile
         if (generatedPackageSwift.exists()) {
-            val text = generatedPackageSwift.readText()
+            var text = generatedPackageSwift.readText()
             if (!text.contains("platforms:")) {
-                generatedPackageSwift.writeText(
+                text =
                     text.replaceFirst(
                         Regex("(name:\\s*\"[^\"]*\",)"),
-                        "\$1\n    platforms: [.macOS(.v14)],",
-                    ),
-                )
+                        "\$1\n    platforms: [.macOS(\"15.0\")],",
+                    )
+            } else if (text.contains(".macOS(.v15)") || text.contains(".macOS(.v14)")) {
+                text = text.replace(".macOS(.v15)", ".macOS(\"15.0\")").replace(".macOS(.v14)", ".macOS(\"15.0\")")
             }
+            generatedPackageSwift.writeText(text)
         }
 
         execOperations
@@ -1043,14 +1038,12 @@ val nativeTargetNames =
         "androidNativeX64",
         "iosArm64",
         "iosSimulatorArm64",
-        "iosX64",
         "linuxArm64",
         "linuxX64",
         "macosArm64",
         "mingwX64",
         "tvosArm64",
         "tvosSimulatorArm64",
-        "watchosArm64",
         "watchosDeviceArm64",
         "watchosSimulatorArm64",
     )

@@ -27,10 +27,9 @@ import platform.CoreFoundation.CFStringGetBytes
 import platform.CoreFoundation.CFStringGetCStringPtr
 import platform.CoreFoundation.CFStringGetLength
 import platform.CoreFoundation.CFStringGetTypeID
+import platform.CoreFoundation.CFStringRef
 import platform.CoreFoundation.kCFAllocatorDefault
 import platform.CoreFoundation.kCFStringEncodingUTF8
-
-typealias CFStringRef = platform.CoreFoundation.CFStringRef
 
 class CFString internal constructor(
     private val ref: CFStringRef,
