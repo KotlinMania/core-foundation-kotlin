@@ -12,9 +12,9 @@ package io.github.kotlinmania.corefoundation.base
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-typealias CFIndex = platform.CoreFoundation.CFIndex
-typealias CFTypeID = platform.CoreFoundation.CFTypeID
-typealias CFTypeRef = platform.CoreFoundation.CFTypeRef
+typealias CFIndex = io.github.kotlinmania.corefoundation.cinterop.CFIndex
+typealias CFTypeID = io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+typealias CFTypeRef = io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 
 /**
  * Helpers for constructing CFIndex values.

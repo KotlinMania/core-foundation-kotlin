@@ -8,6 +8,19 @@ import io.github.kotlinmania.corefoundation.base.CFTypeID
 import io.github.kotlinmania.corefoundation.base.CFTypeRef
 import io.github.kotlinmania.corefoundation.base.TCFType
 import io.github.kotlinmania.corefoundation.base.toCFIndex
+import io.github.kotlinmania.corefoundation.cinterop.CFGetRetainCount
+import io.github.kotlinmania.corefoundation.cinterop.CFGetTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFIndexVar
+import io.github.kotlinmania.corefoundation.cinterop.CFRangeMake
+import io.github.kotlinmania.corefoundation.cinterop.CFShow
+import io.github.kotlinmania.corefoundation.cinterop.CFStringCreateWithBytes
+import io.github.kotlinmania.corefoundation.cinterop.CFStringGetBytes
+import io.github.kotlinmania.corefoundation.cinterop.CFStringGetCStringPtr
+import io.github.kotlinmania.corefoundation.cinterop.CFStringGetLength
+import io.github.kotlinmania.corefoundation.cinterop.CFStringGetTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFStringRef
+import io.github.kotlinmania.corefoundation.cinterop.kCFAllocatorDefault
+import io.github.kotlinmania.corefoundation.cinterop.kCFStringEncodingUTF8
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.convert
@@ -17,19 +30,6 @@ import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.usePinned
 import kotlinx.cinterop.value
-import platform.CoreFoundation.CFGetRetainCount
-import platform.CoreFoundation.CFGetTypeID
-import platform.CoreFoundation.CFIndexVar
-import platform.CoreFoundation.CFRangeMake
-import platform.CoreFoundation.CFShow
-import platform.CoreFoundation.CFStringCreateWithBytes
-import platform.CoreFoundation.CFStringGetBytes
-import platform.CoreFoundation.CFStringGetCStringPtr
-import platform.CoreFoundation.CFStringGetLength
-import platform.CoreFoundation.CFStringGetTypeID
-import platform.CoreFoundation.CFStringRef
-import platform.CoreFoundation.kCFAllocatorDefault
-import platform.CoreFoundation.kCFStringEncodingUTF8
 
 class CFString internal constructor(
     private val ref: CFStringRef,

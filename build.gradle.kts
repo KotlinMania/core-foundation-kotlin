@@ -438,6 +438,15 @@ kotlin {
     androidNativeArm64 { configureBenchmarkCompilation() }
     androidNativeX64 { configureBenchmarkCompilation() }
 
+    targets.withType<KotlinNativeTarget>().configureEach {
+        compilations.getByName("main") {
+            cinterops.create("corefoundation") {
+                defFile(file("src/nativeInterop/cinterop/corefoundation.def"))
+                packageName("io.github.kotlinmania.corefoundation.cinterop")
+            }
+        }
+    }
+
     // Web
     js {
         configureBenchmarkCompilation()
