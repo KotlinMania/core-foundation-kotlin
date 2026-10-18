@@ -43,7 +43,7 @@ If you wish to start contributing or even make a one-off change, simply submit a
 
 ```kotlin
 dependencies {
-    implementation("io.github.kotlinmania:core-foundation-kotlin:0.1.0")
+    implementation("io.github.kotlinmania:core-foundation-kotlin:0.2.0")
 }
 ```
 

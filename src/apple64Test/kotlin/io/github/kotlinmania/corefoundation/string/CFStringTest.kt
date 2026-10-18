@@ -1,4 +1,6 @@
 // port-lint: tests tests/string.rs
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package io.github.kotlinmania.corefoundation.string
 
 import kotlin.test.Test
