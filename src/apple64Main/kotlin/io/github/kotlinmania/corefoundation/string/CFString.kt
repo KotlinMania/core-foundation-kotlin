@@ -3,9 +3,9 @@
 
 package io.github.kotlinmania.corefoundation.string
 
-import io.github.kotlinmania.corefoundation.base.CFIndex
-import io.github.kotlinmania.corefoundation.base.CFTypeID
-import io.github.kotlinmania.corefoundation.base.CFTypeRef
+import io.github.kotlinmania.corefoundation.cinterop.CFIndex
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 import io.github.kotlinmania.corefoundation.base.TCFType
 import io.github.kotlinmania.corefoundation.base.toCFIndex
 import io.github.kotlinmania.corefoundation.cinterop.CFGetRetainCount

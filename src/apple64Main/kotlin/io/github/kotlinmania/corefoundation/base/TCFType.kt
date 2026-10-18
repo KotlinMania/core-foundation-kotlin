@@ -3,6 +3,12 @@
 
 package io.github.kotlinmania.corefoundation.base
 
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
+
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+
+import io.github.kotlinmania.corefoundation.cinterop.CFIndex
+
 // Copyright 2013 The Servo Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution.
 //
@@ -11,10 +17,6 @@ package io.github.kotlinmania.corefoundation.base
 // <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
-
-typealias CFIndex = io.github.kotlinmania.corefoundation.cinterop.CFIndex
-typealias CFTypeID = io.github.kotlinmania.corefoundation.cinterop.CFTypeID
-typealias CFTypeRef = io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 
 /**
  * Helpers for constructing CFIndex values.
