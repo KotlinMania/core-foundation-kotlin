@@ -3,11 +3,9 @@
 
 package io.github.kotlinmania.corefoundation.base
 
-import io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
-
-import io.github.kotlinmania.corefoundation.cinterop.CFTypeID
-
 import io.github.kotlinmania.corefoundation.cinterop.CFIndex
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 
 // Copyright 2013 The Servo Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution.
