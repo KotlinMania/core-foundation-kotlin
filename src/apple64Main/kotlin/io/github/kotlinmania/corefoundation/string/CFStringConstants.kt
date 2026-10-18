@@ -5,8 +5,6 @@ import io.github.kotlinmania.corefoundationsys.base.CFBoolean
 import io.github.kotlinmania.corefoundationsys.base.CFRange
 import io.github.kotlinmania.corefoundationsys.string.CFStringEncoding
 
-typealias CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.CFStringEncoding
-
 const val kCFStringEncodingMacRoman: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingMacRoman
 const val kCFStringEncodingWindowsLatin1: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingWindowsLatin1
 const val kCFStringEncodingISOLatin1: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingISOLatin1
@@ -21,7 +19,3 @@ const val kCFStringEncodingUTF16LE: CFStringEncoding = io.github.kotlinmania.cor
 const val kCFStringEncodingUTF32: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingUTF32
 const val kCFStringEncodingUTF32BE: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingUTF32BE
 const val kCFStringEncodingUTF32LE: CFStringEncoding = io.github.kotlinmania.corefoundationsys.string.kCFStringEncodingUTF32LE
-
-typealias CFBoolean = io.github.kotlinmania.corefoundationsys.base.CFBoolean
-
-typealias CFRange = io.github.kotlinmania.corefoundationsys.base.CFRange

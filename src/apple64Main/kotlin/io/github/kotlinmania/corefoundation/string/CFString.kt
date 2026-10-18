@@ -3,13 +3,11 @@
 
 package io.github.kotlinmania.corefoundation.string
 
-import io.github.kotlinmania.corefoundation.base.CFIndex
-import io.github.kotlinmania.corefoundation.base.CFTypeID
-import io.github.kotlinmania.corefoundation.base.CFTypeRef
 import io.github.kotlinmania.corefoundation.base.TCFType
 import io.github.kotlinmania.corefoundation.base.toCFIndex
 import io.github.kotlinmania.corefoundation.cinterop.CFGetRetainCount
 import io.github.kotlinmania.corefoundation.cinterop.CFGetTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFIndex
 import io.github.kotlinmania.corefoundation.cinterop.CFIndexVar
 import io.github.kotlinmania.corefoundation.cinterop.CFRangeMake
 import io.github.kotlinmania.corefoundation.cinterop.CFShow
@@ -19,6 +17,8 @@ import io.github.kotlinmania.corefoundation.cinterop.CFStringGetCStringPtr
 import io.github.kotlinmania.corefoundation.cinterop.CFStringGetLength
 import io.github.kotlinmania.corefoundation.cinterop.CFStringGetTypeID
 import io.github.kotlinmania.corefoundation.cinterop.CFStringRef
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeID
+import io.github.kotlinmania.corefoundation.cinterop.CFTypeRef
 import io.github.kotlinmania.corefoundation.cinterop.kCFAllocatorDefault
 import io.github.kotlinmania.corefoundation.cinterop.kCFStringEncodingUTF8
 import kotlinx.cinterop.addressOf
